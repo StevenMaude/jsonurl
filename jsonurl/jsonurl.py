@@ -4,6 +4,13 @@ import re
 
 from six.moves import range
 
+try:
+    from urllib import quote_plus as quote_plus
+    from urllib import unquote_plus as unquote_plus
+except ImportError:
+    from urllib.parse import quote_plus as quote_plus
+    from urllib.parse import unquote_plus as unquote_plus
+
 def query_string(d):
     args = dict_to_args(d)
     keys = list(args.keys())
@@ -23,10 +30,10 @@ def parse_query(q):
     return args_to_dict(args)
 
 def param_quote(value):
-    return urllib.quote_plus(value)
+    return quote_plus(value)
     
 def param_unquote(value):
-    return urllib.unquote_plus(value)
+    return unquote_plus(value)
 
 def type_cast(value):
     try:
