@@ -1,5 +1,7 @@
-from __future__ import absolute_import
-import urllib, re
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+import re
+
 from six.moves import range
 
 def query_string(d):
