@@ -2,7 +2,12 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 import re
 
-from six.moves import range
+try:
+    xrange
+except NameError:
+    pass
+else:
+    range = xrange
 
 try:
     from urllib import quote_plus as quote_plus
