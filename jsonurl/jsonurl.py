@@ -1,8 +1,10 @@
+from __future__ import absolute_import
 import urllib, re
+from six.moves import range
 
 def query_string(d):
     args = dict_to_args(d)
-    keys = args.keys()
+    keys = list(args.keys())
     keys.sort()
     return "&".join([key + "=" + args[key] for key in keys])
 
@@ -39,11 +41,11 @@ def list_to_args(l):
     for i in l:
         if type(i) == dict:
             sub = dict_to_args(i)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[str(pos) + "." + s] = nv
         elif type(i) == list:
             sub = list_to_args(i)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[str(pos) + "." + s] = nv
         else:
             args[str(pos)] = param_quote(str(i))
@@ -52,14 +54,14 @@ def list_to_args(l):
 
 def dict_to_args(d):
     args = {}
-    for k, v in d.items():
+    for k, v in list(d.items()):
         if type(v) == dict:
             sub = dict_to_args(v)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[param_quote(dot_escape(k)) + "." + s] = nv
         elif type(v) == list:
             sub = list_to_args(v)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[param_quote(dot_escape(k)) + "." + s] = nv
         else:
             args[param_quote(dot_escape(k))] = param_quote(str(v))
@@ -70,7 +72,7 @@ def dot_split(s):
 
 def args_to_dict(args):
     d = {}
-    keys = args.keys()
+    keys = list(args.keys())
     keys.sort()
     
     for arg in keys:
@@ -92,7 +94,7 @@ def args_to_dict(args):
                     next_is_dict = True
             
             if type(ctx) == dict:
-                if not ctx.has_key(bit):
+                if bit not in ctx:
                     if not last:
                         ctx[bit] = {} if next_is_dict else []
                         ctx = ctx[bit]
