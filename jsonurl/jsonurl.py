@@ -1,8 +1,24 @@
-import urllib, re
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+import re
+
+try:
+    xrange
+except NameError:
+    pass
+else:
+    range = xrange
+
+try:
+    from urllib import quote_plus as quote_plus
+    from urllib import unquote_plus as unquote_plus
+except ImportError:
+    from urllib.parse import quote_plus as quote_plus
+    from urllib.parse import unquote_plus as unquote_plus
 
 def query_string(d):
     args = dict_to_args(d)
-    keys = args.keys()
+    keys = list(args.keys())
     keys.sort()
     return "&".join([key + "=" + args[key] for key in keys])
 
@@ -19,10 +35,10 @@ def parse_query(q):
     return args_to_dict(args)
 
 def param_quote(value):
-    return urllib.quote_plus(value)
+    return quote_plus(value)
     
 def param_unquote(value):
-    return urllib.unquote_plus(value)
+    return unquote_plus(value)
 
 def type_cast(value):
     try:
@@ -39,11 +55,11 @@ def list_to_args(l):
     for i in l:
         if type(i) == dict:
             sub = dict_to_args(i)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[str(pos) + "." + s] = nv
         elif type(i) == list:
             sub = list_to_args(i)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[str(pos) + "." + s] = nv
         else:
             args[str(pos)] = param_quote(str(i))
@@ -52,14 +68,14 @@ def list_to_args(l):
 
 def dict_to_args(d):
     args = {}
-    for k, v in d.items():
+    for k, v in list(d.items()):
         if type(v) == dict:
             sub = dict_to_args(v)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[param_quote(dot_escape(k)) + "." + s] = nv
         elif type(v) == list:
             sub = list_to_args(v)
-            for s, nv in sub.items():
+            for s, nv in list(sub.items()):
                 args[param_quote(dot_escape(k)) + "." + s] = nv
         else:
             args[param_quote(dot_escape(k))] = param_quote(str(v))
@@ -70,7 +86,7 @@ def dot_split(s):
 
 def args_to_dict(args):
     d = {}
-    keys = args.keys()
+    keys = list(args.keys())
     keys.sort()
     
     for arg in keys:
@@ -92,7 +108,7 @@ def args_to_dict(args):
                     next_is_dict = True
             
             if type(ctx) == dict:
-                if not ctx.has_key(bit):
+                if bit not in ctx:
                     if not last:
                         ctx[bit] = {} if next_is_dict else []
                         ctx = ctx[bit]
