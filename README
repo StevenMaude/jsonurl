@@ -10,6 +10,7 @@ It will take python data structures which can be represented in JSON and convert
 
 This is convenient if you wish to pass structured data around in the URL itself rather than in a POST body.  This may complement a web API which also accepts JSON strings in the body of a POST request, providing equivalent functionality using GET without constructing URLs which include url-encoded json objects.
 
+It has been tested with Python 2.7, 3.3, 3.4 and 3.5.
 
 Usage
 -----
